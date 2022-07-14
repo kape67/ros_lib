@@ -85,6 +85,7 @@ class Capture_data():
         os.makedirs(self.args.save_dir)
 
         self.num = 0
+        self.stream_captrue = False
 
         sub_data_list = []
         if self.args.ignore_rgb == False:   sub_data_list.append(message_filters.Subscriber(self.args.rgb_topic, Image))
@@ -133,20 +134,36 @@ class Capture_data():
             print ("No received data!")
             return
         
-        if self.kb.kbhit():
-            c = self.kb.getch()
-        
-            if c == 's':
-                self.capture_data(datalist)
-                print(f'Capture data - {self.num} -')
-            elif c == 'r':
-                self.num = 0
-                print(f'Reset Number')
-            elif c == 'q':
-                exit()
+        if self.stream_captrue == True:
+            self.capture_data(datalist)
+            print(f'Capture data - {self.num} -')
+
+        if self.args.video_mode == False:
+            if self.kb.kbhit():
+                c = self.kb.getch()
+                if c == 's':
+                    self.capture_data(datalist)
+                    print(f'Capture data - {self.num} -')
+                elif c == 'r':
+                    self.num = 0
+                    print(f'Reset Number')
+                elif c == 'q':
+                    exit()
+        else:
+            if self.kb.kbhit():
+                c = self.kb.getch()
+                if c == 's':
+                    self.stream_captrue = True
+                elif c == 'q':
+                    self.stream_captrue = False
+                elif c == 'r':
+                    self.num = 0
+                    print(f'Reset Number')
+
 
 def arg_parse():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--video_mode", action='store_true')
     parser.add_argument("--rgb_topic", default="/camera/color/image_rect_color", type=str)
     parser.add_argument("--depth_topic", default="/camera/depth/image_rect_raw", type=str)
     parser.add_argument("--pcd_topic", default="/camera/depth_registered/points", type=str)
