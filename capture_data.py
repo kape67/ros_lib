@@ -80,7 +80,7 @@ class Capture_data():
         self.args = arg_parse()
 
         self.bridge = CvBridge()
-        # self.kb = KBHit()
+        self.kb = KBHit()
 
         os.makedirs(self.args.save_dir)
 
