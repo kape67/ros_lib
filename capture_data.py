@@ -80,7 +80,7 @@ class Capture_data():
         self.args = arg_parse()
 
         self.bridge = CvBridge()
-        self.kb = KBHit()
+        # self.kb = KBHit()
 
         os.makedirs(self.args.save_dir)
 
@@ -122,6 +122,13 @@ class Capture_data():
                 pcd_points[..., 1] = pcd['y']
                 pcd_points[..., 2] = pcd['z']
                 o3_pcd.points = o3.utility.Vector3dVector(pcd_points.reshape(-1,3))
+                if pcd['rgb'] is not None:
+                    pcd = ros_numpy.point_cloud2.split_rgb_field(pcd)
+                    pcd_colors = np.zeros((pcd.shape[0], pcd.shape[1], 3))
+                    pcd_colors[..., 0] = pcd['r']/255
+                    pcd_colors[..., 1] = pcd['g']/255
+                    pcd_colors[..., 2] = pcd['b']/255
+                    o3_pcd.colors = o3.utility.Vector3dVector(pcd_colors.reshape(-1,3))
                 save_str = self.args.save_dir + '/' + str(self.num) + '.ply'
                 o3.io.write_point_cloud(save_str, o3_pcd)
             
