@@ -155,17 +155,19 @@ class Capture_data():
                     self.num = 0
                     print(f'Reset Number')
                 elif c == 'q':
-                    exit()
+                    sys.exit()
         else:
             if self.kb.kbhit():
                 c = self.kb.getch()
                 if c == 's':
                     self.stream_captrue = True
-                elif c == 'q':
+                elif c == 'p': # pause
                     self.stream_captrue = False
                 elif c == 'r':
                     self.num = 0
                     print(f'Reset Number')
+                elif c == 'q':
+                    sys.exit()
 
 
 def arg_parse():
